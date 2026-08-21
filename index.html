@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Matthew's Birthday!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-a: #07040f;
+        --bg-b: #140a24;
+        --pink: #ff4f9a;
+        --purple: #8b5cf6;
+        --gold: #ffd36e;
+        --text: #f4eefc;
+        --dim: #b6a6d6;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background: radial-gradient(
+          circle at 30% 20%,
+          var(--bg-b),
+          var(--bg-a) 60%
+        );
+        color: var(--text);
+        overflow: hidden;
+        height: 100vh;
+        width: 100vw;
+        position: relative;
+      }
+
+      /* ambient twinkling stars */
+      #stars {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .star {
+        position: absolute;
+        border-radius: 50%;
+        background: var(--gold);
+        box-shadow: 0 0 6px 1px var(--gold);
+        animation: twinkle 3s ease-in-out infinite;
+      }
+      @keyframes twinkle {
+        0%,
+        100% {
+          opacity: 0.15;
+          transform: scale(0.8);
+        }
+        50% {
+          opacity: 0.9;
+          transform: scale(1.2);
+        }
+      }
+
+      .screen {
+        position: absolute;
+        inset: 0;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 32px 20px;
+        z-index: 2;
+      }
+      .screen.active {
+        display: flex;
+      }
+
+      /* ---------- LANDING ---------- */
+      .eyebrow {
+        letter-spacing: 0.35em;
+        text-transform: uppercase;
+        font-size: 11px;
+        color: var(--dim);
+        margin-bottom: 18px;
+      }
+      .title {
+        font-family: "Dancing Script", cursive;
+        font-weight: 700;
+        font-size: clamp(42px, 11vw, 88px);
+        line-height: 1.1;
+        background: linear-gradient(
+          90deg,
+          var(--pink),
+          var(--gold),
+          var(--purple)
+        );
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: shimmer 6s linear infinite;
+        text-shadow: 0 0 40px rgba(255, 79, 154, 0.25);
+      }
+      @keyframes shimmer {
+        0% {
+          background-position: 0% center;
+        }
+        100% {
+          background-position: 200% center;
+        }
+      }
+      .subtitle {
+        margin-top: 14px;
+        color: var(--dim);
+        font-size: 15px;
+        max-width: 320px;
+      }
+      .glow-heart {
+        font-size: 34px;
+        margin-top: 26px;
+        filter: drop-shadow(0 0 12px var(--pink));
+        animation: pulse 1.8s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.15);
+        }
+      }
+
+      .btn {
+        margin-top: 34px;
+        border: none;
+        cursor: pointer;
+        font-family: "Poppins", sans-serif;
+        font-weight: 500;
+        font-size: 15px;
+        letter-spacing: 0.02em;
+        color: var(--bg-a);
+        background: linear-gradient(120deg, var(--pink), var(--gold));
+        padding: 14px 34px;
+        border-radius: 999px;
+        box-shadow: 0 0 24px rgba(255, 79, 154, 0.45),
+          0 0 60px rgba(139, 92, 246, 0.25);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .btn:active {
+        transform: scale(0.96);
+      }
+      .btn:hover {
+        box-shadow: 0 0 30px rgba(255, 79, 154, 0.7),
+          0 0 80px rgba(139, 92, 246, 0.4);
+      }
+
+      /* ---------- GAME ---------- */
+      #game-screen {
+        justify-content: flex-start;
+        padding-top: 26px;
+      }
+      .hud {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        max-width: 480px;
+        font-size: 13px;
+        color: var(--dim);
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+      .hud b {
+        color: var(--gold);
+        font-size: 15px;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+      .bar-track {
+        width: 100%;
+        max-width: 480px;
+        height: 6px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+        margin-bottom: 8px;
+      }
+      .bar-fill {
+        height: 100%;
+        width: 100%;
+        border-radius: 6px;
+        background: linear-gradient(90deg, var(--pink), var(--gold));
+        transition: width 0.1s linear;
+      }
+      .game-instructions {
+        font-size: 12.5px;
+        color: var(--dim);
+        margin-bottom: 6px;
+      }
+      #game-area {
+        position: relative;
+        width: 100%;
+        max-width: 480px;
+        flex: 1;
+        height: 100%;
+        overflow: hidden;
+        border-radius: 18px;
+        background: linear-gradient(
+          180deg,
+          rgba(139, 92, 246, 0.06),
+          rgba(255, 79, 154, 0.04)
+        );
+        border: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .falling {
+        position: absolute;
+        top: -40px;
+        font-size: 28px;
+        cursor: pointer;
+        user-select: none;
+        filter: drop-shadow(0 0 8px rgba(255, 79, 154, 0.55));
+        animation-name: fall;
+        animation-timing-function: linear;
+        animation-fill-mode: forwards;
+        touch-action: manipulation;
+      }
+      @keyframes fall {
+        to {
+          transform: translateY(var(--fall-dist));
+        }
+      }
+      .caught {
+        animation: pop 0.35s ease forwards !important;
+        pointer-events: none;
+      }
+      @keyframes pop {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1.8);
+          opacity: 0;
+        }
+      }
+
+      #pregame-overlay,
+      #postgame-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: rgba(7, 4, 15, 0.72);
+        backdrop-filter: blur(2px);
+        border-radius: 18px;
+        text-align: center;
+        padding: 20px;
+      }
+      .mini-title {
+        font-family: "Playfair Display", serif;
+        font-style: italic;
+        font-size: 24px;
+        margin-bottom: 10px;
+        color: var(--text);
+      }
+      .mini-sub {
+        color: var(--dim);
+        font-size: 13.5px;
+        max-width: 280px;
+        margin-bottom: 6px;
+      }
+
+      /* ---------- LETTER ---------- */
+      #letter-screen {
+        padding-top: 40px;
+        padding-bottom: 40px;
+        overflow-y: auto;
+      }
+      .letter-card {
+        max-width: 560px;
+        width: 100%;
+        background: linear-gradient(
+          160deg,
+          rgba(139, 92, 246, 0.08),
+          rgba(255, 79, 154, 0.05)
+        );
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 22px;
+        padding: clamp(24px, 5vw, 46px);
+        box-shadow: 0 0 60px rgba(139, 92, 246, 0.15);
+        text-align: left;
+      }
+      .letter-header {
+        font-family: "Dancing Script", cursive;
+        font-weight: 700;
+        font-size: clamp(30px, 6vw, 44px);
+        color: var(--gold);
+        text-shadow: 0 0 20px rgba(255, 211, 110, 0.35);
+        margin-bottom: 18px;
+        text-align: center;
+      }
+      .letter-body p {
+        font-family: "Playfair Display", serif;
+        font-size: 15.5px;
+        line-height: 1.85;
+        color: var(--text);
+        margin-bottom: 16px;
+        opacity: 0;
+        transform: translateY(10px);
+        animation: rise 0.7s ease forwards;
+      }
+      .letter-body em.shout {
+        font-style: normal;
+        color: var(--pink);
+        text-shadow: 0 0 10px rgba(255, 79, 154, 0.6);
+        letter-spacing: 0.02em;
+      }
+      .signature {
+        font-family: "Dancing Script", cursive;
+        font-weight: 700;
+        font-size: 26px;
+        color: var(--pink);
+        text-align: right;
+        margin-top: 6px;
+        text-shadow: 0 0 16px rgba(255, 79, 154, 0.5);
+        opacity: 0;
+        animation: rise 0.7s ease forwards;
+      }
+      @keyframes rise {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .heart-rain {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+        overflow: hidden;
+      }
+      .drift {
+        position: absolute;
+        bottom: -40px;
+        font-size: 18px;
+        opacity: 0.7;
+        animation: driftUp linear forwards;
+        filter: drop-shadow(0 0 6px rgba(255, 79, 154, 0.5));
+      }
+      @keyframes driftUp {
+        to {
+          transform: translateY(-110vh) translateX(var(--dx));
+          opacity: 0;
+        }
+      }
+
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 6px;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="stars"></div>
+
+    <!-- LANDING -->
+    <div class="screen active" id="landing-screen">
+      <div class="eyebrow">To my sweetest Boyfriend</div>
+      <div class="title">______<br />Matthew</div>
+      <p class="subtitle">
+        Oh oh you want your gift? LMAO YOU THINK IM JUST GONNA GIVE IT TO YOU??
+        GAK LAH EARN IT FIRST
+      </p>
+      <div class="glow-heart">🩵</div>
+      <button class="btn" id="start-btn">Fine.</button>
+    </div>
+
+    <!-- GAME -->
+    <div class="screen" id="game-screen">
+      <div class="hud">
+        <span>Time left: <b id="time-left">20</b>s</span>
+        <span>Caught: <b id="score">0</b></span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" id="bar-fill"></div></div>
+      <div class="game-instructions">
+        Tap the hearts &amp; gifts as they fall okay? okay.
+      </div>
+      <div id="game-area">
+        <div id="pregame-overlay">
+          <div class="mini-title">catch em!</div>
+          <div class="mini-sub">
+            Tap as many hearts and gifts as you can in 20 seconds okay? I'm sure
+            you got this :3
+          </div>
+          <button class="btn" id="play-btn">
+            Holy shit I'm so excited my balls are sweating lemme start
+          </button>
+        </div>
+        <div id="postgame-overlay" style="display: none">
+          <div class="mini-title">Alright times up!</div>
+          <div class="mini-sub" id="result-text">You caught 0 hearts :3</div>
+          <button class="btn" id="reveal-btn">
+            uhuh yea okay WHERES MY GIFT
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LETTER -->
+    <div class="screen" id="letter-screen">
+      <div class="heart-rain" id="heart-rain"></div>
+      <div class="letter-card">
+        <div class="letter-header">To my dearest boyfriend Matthew,</div>
+        <div class="letter-body" id="letter-body"></div>
+        <div class="signature">— Your coolest girlfriend</div>
+      </div>
+    </div>
+
+    <script>
+      // ---------- ambient stars ----------
+      const starsWrap = document.getElementById("stars");
+      for (let i = 0; i < 40; i++) {
+        const s = document.createElement("div");
+        s.className = "star";
+        const size = Math.random() * 2.5 + 1;
+        s.style.width = size + "px";
+        s.style.height = size + "px";
+        s.style.left = Math.random() * 100 + "vw";
+        s.style.top = Math.random() * 100 + "vh";
+        s.style.animationDelay = Math.random() * 3 + "s";
+        starsWrap.appendChild(s);
+      }
+
+      // ---------- screen nav ----------
+      function showScreen(id) {
+        document
+          .querySelectorAll(".screen")
+          .forEach((s) => s.classList.remove("active"));
+        document.getElementById(id).classList.add("active");
+      }
+
+      document
+        .getElementById("start-btn")
+        .addEventListener("click", () => showScreen("game-screen"));
+
+      // ---------- game ----------
+      const gameArea = document.getElementById("game-area");
+      const scoreEl = document.getElementById("score");
+      const timeEl = document.getElementById("time-left");
+      const barFill = document.getElementById("bar-fill");
+      const pregame = document.getElementById("pregame-overlay");
+      const postgame = document.getElementById("postgame-overlay");
+      const resultText = document.getElementById("result-text");
+
+      let score = 0;
+      let timeLeft = 20;
+      let gameTimer = null;
+      let spawnTimer = null;
+      let running = false;
+      const symbols = ["💜", "💖", "🎁", "💝", "✨", "💗"];
+
+      function spawnItem() {
+        if (!running) return;
+        const el = document.createElement("div");
+        el.className = "falling";
+        el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        const areaWidth = gameArea.clientWidth;
+        const areaHeight = gameArea.clientHeight;
+        const startX = Math.random() * (areaWidth - 36);
+        el.style.left = startX + "px";
+        const duration = 2.6 + Math.random() * 1.6;
+        el.style.setProperty("--fall-dist", areaHeight + 60 + "px");
+        el.style.animationDuration = duration + "s";
+        gameArea.appendChild(el);
+
+        const catchHandler = (e) => {
+          e.stopPropagation();
+          if (el.classList.contains("caught")) return;
+          el.classList.add("caught");
+          score++;
+          scoreEl.textContent = score;
+          setTimeout(() => el.remove(), 350);
+        };
+        el.addEventListener("click", catchHandler);
+        el.addEventListener("touchstart", catchHandler, { passive: true });
+
+        el.addEventListener("animationend", () => {
+          if (el.parentNode) el.remove();
+        });
+      }
+
+      function startGame() {
+        score = 0;
+        timeLeft = 20;
+        scoreEl.textContent = 0;
+        timeEl.textContent = 20;
+        barFill.style.width = "100%";
+        pregame.style.display = "none";
+        postgame.style.display = "none";
+        running = true;
+
+        spawnTimer = setInterval(spawnItem, 550);
+        gameTimer = setInterval(() => {
+          timeLeft--;
+          timeEl.textContent = Math.max(timeLeft, 0);
+          barFill.style.width = (timeLeft / 20) * 100 + "%";
+          if (timeLeft <= 0) {
+            endGame();
+          }
+        }, 1000);
+      }
+
+      function endGame() {
+        running = false;
+        clearInterval(gameTimer);
+        clearInterval(spawnTimer);
+        document.querySelectorAll(".falling").forEach((f) => f.remove());
+        resultText.textContent = `You caught ${score} heart${
+          score === 1 ? "" : "s"
+        } 💜`;
+        postgame.style.display = "flex";
+      }
+
+      document.getElementById("play-btn").addEventListener("click", startGame);
+      document.getElementById("reveal-btn").addEventListener("click", () => {
+        showScreen("letter-screen");
+        startHeartRain();
+        animateLetter();
+      });
+
+      // ---------- letter content ----------
+      const paragraphs = [
+        'Today\'s a special day <em class="shout">HEHHYAHEHAYEYEYAHYEEEHHAAWWW</em> and also your 3rd birthday with me. Time flies huh.',
+        "Today, 2 years ago, we agreed to meet up at that small green stinky boiling ass room so that I could give you my gift, still remember that? You were using a stupid mask, in other words, MASK FISHING. But whatever I fell for that and I did not regret it, with or without, you still look amazing :3",
+        "It has been an honor to introduce you and to teach you new things, make my interests yours and make yours mine, may we proceed to do this! I'm glad that you got interested in some of the shows and things I find interesting like yk.. Hazbin hotel, helluva boss, TADC, we watched that in the cinema together and I really enjoyed that moment.",
+        "As for digital arts, I will persist in teaching you more, and I am truly proud of you. Seeing you improve day by day makes me feel really happy yk :3 even though you make mistakes sometimes that make me laugh… IT'S ALRIGHT!!! We're gonna suffer in anatomy and perspectives that's for sure..",
+        'May 17 treat you well honey. I would love to stay for another birthday, and another, <em class="shout">AND ANOTHER AND ANOTHER AND ANOERTEHRANDETHEANOTHER AND ANOTHER</em> if God permits heh. OH AND REMEMBER!!! That I will always love you very much, no matter what.',
+        "I love you matt I LOVE YOU I LOVE YOUU",
+      ];
+
+      function animateLetter() {
+        const body = document.getElementById("letter-body");
+        if (body.dataset.rendered) return;
+        body.dataset.rendered = "1";
+        paragraphs.forEach((p, i) => {
+          const el = document.createElement("p");
+          el.innerHTML = p;
+          el.style.animationDelay = i * 0.35 + "s";
+          body.appendChild(el);
+        });
+        document.querySelector(".signature").style.animationDelay =
+          paragraphs.length * 0.35 + 0.2 + "s";
+      }
+
+      function startHeartRain() {
+        const wrap = document.getElementById("heart-rain");
+        if (wrap.dataset.started) return;
+        wrap.dataset.started = "1";
+        const syms = ["💜", "💖", "✨", "💗"];
+        setInterval(() => {
+          const d = document.createElement("div");
+          d.className = "drift";
+          d.textContent = syms[Math.floor(Math.random() * syms.length)];
+          d.style.left = Math.random() * 100 + "vw";
+          d.style.setProperty("--dx", Math.random() * 80 - 40 + "px");
+          d.style.animationDuration = 6 + Math.random() * 4 + "s";
+          wrap.appendChild(d);
+          setTimeout(() => d.remove(), 11000);
+        }, 900);
+      }
+    </script>
+  </body>
+</html>
